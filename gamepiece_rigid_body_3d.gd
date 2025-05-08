@@ -1,6 +1,6 @@
 extends RigidBody3D
 
-var end_scene = preload("res://Askout_node_2d.tscn").instantiate()
+var end_scene = preload("res://node_3d.tscn").instantiate()
 var goal_speed
 var launched = false
 var tracking = false
