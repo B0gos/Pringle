@@ -1,0 +1,140 @@
+[gd_scene load_steps=16 format=3 uid="uid://f6vvxhfxat4g"]
+
+[ext_resource type="Script" path="res://node_3d.gd" id="1_rt3lo"]
+[ext_resource type="PackedScene" uid="uid://q8nc5rb14jov" path="res://gamepiece_rigid_body_3d.tscn" id="2_fwsdo"]
+[ext_resource type="Script" path="res://character_body_3d.gd" id="3_58cfc"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_p2yb1"]
+rayleigh_coefficient = 3.16
+rayleigh_color = Color(0.620637, 0.303844, 0.154439, 1)
+mie_coefficient = 0.0
+ground_color = Color(0.740466, 0.408636, 0.387075, 1)
+
+[sub_resource type="Sky" id="Sky_0blly"]
+sky_material = SubResource("PhysicalSkyMaterial_p2yb1")
+
+[sub_resource type="Environment" id="Environment_vphaa"]
+background_mode = 2
+background_energy_multiplier = 3.85
+sky = SubResource("Sky_0blly")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nbj3j"]
+margin = 1.0
+size = Vector3(8, 45, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u18yx"]
+albedo_color = Color(0.505882, 0.505882, 0.505882, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emebx"]
+albedo_color = Color(0.505882, 0.505882, 0.505882, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nk4xo"]
+albedo_color = Color(0.505344, 0.505344, 0.505344, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_xhjmc"]
+height = 0.5
+radius = 4.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cfxde"]
+albedo_color = Color(0.650128, 0.650128, 0.650128, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_rbio8"]
+height = 1.0
+radius = 5.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wl0kn"]
+size = Vector3(30, 1, 1)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_u6bo2"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_rt3lo")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.702153, -0.642664, 0.306535, 0, 0.430511, 0.902586, -0.712026, -0.633753, 0.302285, 0, 4.16598, 0)
+light_energy = 1.05
+shadow_enabled = true
+
+[node name="Gamepiece_RigidBody3D" parent="." instance=ExtResource("2_fwsdo")]
+transform = Transform3D(0.920366, -0.361525, 0.149083, 0.382929, 0.910499, -0.156065, -0.079319, 0.200725, 0.976431, 0, 23, 0)
+collision_layer = 7
+collision_mask = 7
+axis_lock_linear_z = true
+gravity_scale = 5.0
+freeze = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 28.224)
+doppler_tracking = 2
+fov = 90.0
+far = 400.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_vphaa")
+
+[node name="LWall_StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LWall_StaticBody3D"]
+shape = SubResource("BoxShape3D_nbj3j")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="LWall_StaticBody3D"]
+size = Vector3(1, 45, 1)
+material = SubResource("StandardMaterial3D_u18yx")
+
+[node name="RWall_StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RWall_StaticBody3D"]
+shape = SubResource("BoxShape3D_nbj3j")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="RWall_StaticBody3D"]
+size = Vector3(1, 45, 1)
+material = SubResource("StandardMaterial3D_emebx")
+
+[node name="MovingPlatform_CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(0.999929, -0.0116487, 0.00234013, 0.0116549, 0.999928, -0.00267648, -0.00230878, 0.00270357, 0.999994, -10, -26, 0)
+motion_mode = 1
+floor_constant_speed = true
+script = ExtResource("3_58cfc")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="MovingPlatform_CharacterBody3D"]
+radius = 4.0
+height = 0.5
+material = SubResource("StandardMaterial3D_nk4xo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MovingPlatform_CharacterBody3D"]
+shape = SubResource("CylinderShape3D_xhjmc")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 42.8379, 0)
+light_energy = 6.01
+light_indirect_energy = 7.303
+spot_range = 68.937
+spot_angle = 53.57
+
+[node name="Shooter_StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 28, 0)
+
+[node name="Shooter_CSGCylinder3D" type="CSGCylinder3D" parent="Shooter_StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
+radius = 5.0
+height = 1.0
+material = SubResource("StandardMaterial3D_cfxde")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Shooter_StaticBody3D"]
+shape = SubResource("CylinderShape3D_rbio8")
+
+[node name="Roof_CollisionShape3D" type="CollisionShape3D" parent="Shooter_StaticBody3D"]
+shape = SubResource("BoxShape3D_wl0kn")
+
+[node name="Deadzone_Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28, 0)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Deadzone_Area3D"]
+transform = Transform3D(0.99841, 0.0324797, -0.0460741, -0.0297824, 0.997868, 0.0580686, 0.0478619, -0.0566041, 0.997249, 0, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_u6bo2")
+
+[connection signal="body_entered" from="Deadzone_Area3D" to="Gamepiece_RigidBody3D" method="_on_deadzone_area_3d_body_entered"]
